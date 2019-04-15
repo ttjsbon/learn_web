@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul{
+			margin-top: 100px;
+		}
+		li{
+			list-style-type: none;
+			margin-bottom: 30px;
+			text-align: center;
+		}
+		#box{
+			display: flex;
+			height: 1500px;
+		}
+		nav{
+			flex: 1;
+			background-color: rgb(0,111,55);
+		}
+		#right{
+			flex: 4;
+			background-color: rgb(111,55,222)
+		}
+		a{
+			text-decoration-line: none;
+			display: inline-block;
+			color: white;
+			font-weight: bold;
+		}
+		table{
+			font-family: verdana,arial,sans-serif;
+			font-size:11px;
+			color:#333333;
+			border-width: 1px;
+			border-color: #999999;
+			border-collapse: collapse;
+			margin: 10px auto;
+			text-align: center;
+		}
+		th{
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #666666;
+			background-color: #dedede;
+		}
+		td{
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #666666;
+			background-color: #ffffff;
+		}
+		label{
+			margin-right: 10px;
+			margin-left: 10px;
+			font-weight: bold;
+			color: white;
+		}
+		#select{
+			padding-left: 200px;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<nav_left></nav_left>
+		<div id="right">
+			<router-view></router-view>
+		</div>
+	</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script type="text/javascript" src="script/main.js"></script>
+</body>
+</html>

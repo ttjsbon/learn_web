@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>文章</title>
+	<style type="text/css">
+		li{
+			list-style-type: none;
+			display: inline-block;
+			padding-right: 30px;
+
+		}
+		nav{
+			background-color: red;
+			height: 100px;
+			padding-top: 20px;
+			box-sizing: border-box;
+		}
+		ul{
+			padding-left: 43%;
+		}
+		#single input{
+			margin-top: 10px;
+			margin-left: 39%;
+			margin-bottom: 10px;
+		}
+		#write label{
+			margin-left: 35.0%;
+		}
+		h2{
+			text-align: center;
+		}
+		textarea{
+			width: 60%;
+			height: 500px;
+			margin-left: 20%;
+			margin-top: 20px;
+		}
+		#write button{
+			display: block;
+			margin: 0 auto;
+			width: 100px;
+			height: 30px;
+			font-weight: bold;
+		}
+		artical{
+			width: 60%;
+			margin-bottom: 10px;
+			margin-left: 20px;
+			margin-right: 20px;
+		}
+		a{
+			cursor: pointer;
+			font-weight: bold;
+			text-decoration: none;
+		}
+		#con{
+			width: 60%;
+			margin: 0 auto;
+		}
+		#single{
+			background-color: rgb(113,123,133)
+		}
+		#write{
+			background-color: rgb(87,107,127)
+		}
+		.single-blog{
+			border: 1px solid black
+		}
+	</style>
+</head>
+<body>
+	<div id="con">
+		<nav>
+			<ul>
+				<li><router-link to='/blog'>主页</router-link></li>
+				<li><router-link to='/blog/wri'>写博客</router-link></li>
+			</ul>
+		</nav>
+		<router-view></router-view>
+	</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script type="text/javascript" src="script/blog.js"></script>
+</body>
+</html>

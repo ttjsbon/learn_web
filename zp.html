@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>作品集</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		iframe{
+			width: 80%;
+			height: 1000px;
+			float: left;
+			background-color: white: 
+		}
+		nav{
+			float: left;
+			margin-right: 20px;
+			background-color: rgb(40,44,52); 
+			width: 100px;
+			height: 1000px;
+		}
+		li{
+			list-style-type: none;
+			margin-top: 10px;
+			margin-bottom: 30px;
+			color: white;
+			text-align: center;
+			cursor:pointer;
+		}
+		/*a{
+			text-decoration: none;
+			color: rgb(40,108,160);
+			color: white;
+			margin: 0 auto;
+			display: inline-block;
+			width: 100px;
+			text-align: center;
+		}*/
+		#box{
+			padding: 20px;
+			height: 1100px;
+		}
+		h1{
+			text-align: center;
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+<body>
+	<header></header>
+	<div id="box">
+		<h1>DEMO合集</h1>
+		<nav>
+			<ul>
+				<li>
+					扫雷
+					<!--a href="sl.html">扫雷</a-->
+				</li>
+				<li>
+					数字游戏
+					<!--a href="pt.html">数字游戏</a-->
+				</li>
+				<li>
+					九宫格
+					<!--a href="jgg.html">九宫格</a-->
+				</li>
+				<li>
+					弹幕
+					<!--a href="dm.html">弹幕</a-->
+				</li>
+				<li>
+					公司销售数据（关联小程序）
+					<!--a href="dm.html">弹幕</a-->
+				</li>
+				<li>
+					博客
+					<!--a href="dm.html">弹幕</a-->
+				</li>
+			</ul>
+		</nav>
+		<iframe src="https://e6rx.cn/sl"></iframe>
+	</div>
+	<script type="text/javascript">
+		let li_all=document.querySelectorAll("li");
+		let ifa=document.getElementsByTagName("iframe")[0];
+		function addLoadEvent(func){
+			let oldOnload=window.onload;
+			if(typeof window.onload !== 'function'){
+				window.onload=func;
+			}
+			else{
+				window.onload=()=>{
+					oldOnload();
+					func();
+				}
+			}
+		}
+		function bindEvent(el,event,func,args){
+			//console.log(args);
+			el[event]=func.bind(this,...args);
+		}
+		addLoadEvent(function(){
+			li_all[0].onclick=()=>{
+				ifa.src="https://e6rx.cn/sl";
+			};
+			li_all[1].onclick=()=>{
+				ifa.src="https://e6rx.cn/pt";
+			};
+			li_all[2].onclick=()=>{
+				ifa.src="https://e6rx.cn/jgg";
+			};
+			li_all[3].onclick=()=>{
+				ifa.src="https://e6rx.cn/dm";
+			};
+			li_all[4].onclick=()=>{
+				ifa.src="https://e6rx.cn/main";
+			};
+			li_all[5].onclick=()=>{
+				ifa.src="https://e6rx.cn/blog";
+			};
+		})
+	</script>
+</body>
+</html>

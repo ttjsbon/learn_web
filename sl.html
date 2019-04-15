@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#box{
+			position: relative;
+			/*display: grid;*/
+			width: 80%;
+			height: 1500px;
+			margin: 0 auto;
+		}
+		.right{
+			width: 300px;
+			position: absolute;
+			right: 0;
+			top: 30px;
+			text-align: center;
+			padding: 10px 10px 10px 30px;
+		}
+		.left{
+			position: absolute;
+			top:30px;
+			right: 350px;
+		}
+		.left span{
+			display: inline-block;
+			margin: 2px; 
+		}
+		span{
+			width: 300px;
+			display: inline-block;
+			text-align: center;
+			vertical-align: bottom;
+			margin: 0 auto;
+		}
+		button{
+			width: 150px;
+			height: 40px;
+			margin-top: 20px;
+			background-color: gray;
+		}
+		input{
+		}
+		fieldset{
+			width: 200px;
+			padding: 20px; 
+			margin: 0 auto;
+		}
+		.ts{
+			text-align: left;
+		}
+		.dl{
+			background-image: url(pic/mine.png);
+			width: 300px;
+			display: inline-block;
+			text-align: center; 
+			vertical-align: middle;
+		}
+		.fl{
+			background-image: url(pic/flag.png); 
+			width: 300px;
+			display: inline-block;
+			text-align: center;
+			vertical-align: middle;
+		}
+		.kb{
+			background-color: rgba(100,255,255,0.5);
+			width: 300px;
+			display: inline-block;
+			text-align: center;
+			vertical-align: middle;
+			width: 35px;
+			height: 35px;
+		}
+		.pt{
+			background-color: gray;
+			width: 35px;
+			height: 35px;
+		}
+		li{
+			list-style-type: none;
+		}
+		p{
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<div class="left"></div>
+		<div class="right">
+			<span>剩余雷数：个</span>
+			<span>持续时间：秒</span>
+			<fieldset class="choose">
+				<legend>难度选择：</legend>
+				<input type="radio" name="level" value="1" id="easy">
+				<label for="easy">初级：（10*10）</label>
+				<br/>
+				<input type="radio" name="level" value="2" id="middle">
+				<label for="midlle">中级：（15*15）</label>
+				<br/>
+				<input type="radio" name="level" value="3" id="diff">
+				<label for="diff">高级：（20*20）</label>
+			</fieldset>
+			<button>开始游戏</button>
+			<p>
+				<span class="ts">提示：</span>				
+				<ul>
+					<li>点击“开始游戏”开始计时</li>
+					<li>游戏中点击开始游戏将开始新游戏</li>
+				</ul>
+			</p>			
+		</div>
+	</div>
+	<script type="text/javascript">
+		let box=document.getElementsByClassName("left")[0];
+		let button1=document.querySelector("button");
+		let cho1=document.getElementsByTagName("input")[0];
+		let cho2=document.getElementsByTagName("input")[1];
+		let cho3=document.getElementsByTagName("input")[2];
+		let dl_span=box.getElementsByTagName("span");
+		let js_span=document.querySelectorAll(".right span")[1];
+		let span_num=document.querySelector(".right span");
+		let seconds;
+		let times;
+		let newdl=[];
+		function time_js(){
+			seconds++;
+			js_span.innerText=`持续时间：${seconds}秒`;
+		}
+		function chooseGame(type){
+			//console.log(type);
+			let i=0;
+			let span_num=dl_span.length;
+			let cj=type**2-span_num;
+			box.style.width=`${type*39}px`;
+			box.style.height=`${type*40}px`;
+
+			//box.removeChild(box.getElementsByTagName("span"))
+			while(i<cj){
+				let sm=document.createElement("span");
+				/*sm.style.backgroundColor="gray";
+				sm.style.width=35+"px";
+				sm.style.height=35+"px";改为设置class*/
+				sm.classList.add("pt");
+				box.appendChild(sm);
+				i++;				
+			}
+			while(i>cj){
+				box.removeChild(box.getElementsByTagName("span")[0]);
+				i--;
+			}
+			for(let i=0;i<type**2;i++){
+				//dl_span[i].classList.remove(dl_span[i].classList[0]);
+				dl_span[i].className="pt";
+				dl_span[i].innerText=null;
+			}//游戏初始化，清除标记
+			clearInterval(times);
+		}
+		function arr_ran(a,b){
+			return Math.random()>0.5?-1:1;
+		}
+		function xl(span_ind,num2){	//获取相邻元素
+			let arr_xl=[span_ind-num2-1,span_ind-num2,span_ind-num2+1,span_ind-1,span_ind+1,span_ind+num2-1,span_ind+num2,span_ind+num2+1].filter((v,ind)=>{
+				if(span_ind%num2===0&&(v%num2===num2-1)&&(ind===0||ind===3||ind===5)){
+					return false;
+				}
+				else if(span_ind%num2===(num2-1)&&(v%num2===0)&&(ind===2||ind===4||ind===7)){
+					return false;
+				}
+				else{
+					return true;
+				}
+			});
+			return arr_xl;
+		}
+		function startGame(){
+			let arr_1=[];
+			let arr_2=[];
+			let arr_temp=[];
+			let num=dl_span.length;
+			let num2=Math.sqrt(num);
+			//console.log(num);
+			let rand_dl=Math.floor(Math.random()*num*0.2)+num*0.1;
+			let sy_dl=rand_dl;
+			let sj_dl=rand_dl;
+			let sy_kg=0;
+			let old_arr=[];
+			let dl_arr=[];
+			seconds=0;	
+			clearInterval(times);
+			times=setInterval(time_js,1000); 
+			span_num.innerText=`剩余雷数：${rand_dl}个`;
+			for(let i=0;i<num;i++){
+				//dl_span[i].classList.remove(dl_span[i].classList[0]);
+				dl_span[i].className="pt";
+				dl_span[i].innerText=null;
+				old_arr[i]=i;
+				dl_arr[i]=0;
+			}//游戏初始化，清除标记
+			let new_arr=old_arr.sort(arr_ran);
+			//console.log(new_arr);
+			for(let i=0;i<rand_dl;i++){
+				//dl_span[new_arr[i]].className="dl";
+				dl_arr[new_arr[i]]="dl";
+			}
+			//console.log(dl_arr);
+			newdl=dl_arr.map((val,index)=>{
+				//console.log(val,index);
+				let count=0;
+				if(val !== "dl"){
+					let arr_all=xl(index,num2);
+					/*let arr_all=[index-num2-1,index-num2,index-num2+1,index-1,index+1,index+num2-1,index+num2,index+num2+1].filter((v,ind)=>{
+						if(index%num2===0&&(v%num2===num2-1)&&(ind===0||ind===3||ind===5)){
+							return false;
+						}
+						else if(index%num2===(num2-1)&&(v%num2===0)&&(ind===2||ind===4||ind===7)){
+							return false;
+						}
+						else{
+							return true;
+						}
+					});
+					.filter((val,index)=>{
+						if((index-num2-1)%num2!==(num2-1)&&(index-1)%num2!==(num2-1)&&(index+num2-1)%num2!==(num2-1)&&(index-num2+1)%num2!==0&&(index+1)%num2!==0&&(index+num2+1)%num2!==0){
+							return true;
+						}
+					});*/
+					//console.log(arr_all);
+					for(let [key,val1] of arr_all.entries()){
+						//console.log(val1);
+						if(dl_arr[val1]==='dl'){
+							count++;
+						}
+					}
+					//console.log(count);
+					return count;
+				}
+				else{
+					return "dl";
+				}
+			});
+			//console.log(newdl);
+			for(let i=0;i<num;i++){
+				dl_span[i].onmouseup=(e)=>{
+					if(dl_span[i].classList.contains("kb")===false){
+						if(e.button===0){
+							//dl_span[i].innerText=null;	
+							//console.log(newdl[i],newdl,i);
+							if(newdl[i]==="dl"){
+								for(let i=0;i<rand_dl;i++){
+									dl_span[new_arr[i]].classList.add("dl");
+								}
+								clearInterval(times);
+								alert("game over");
+								return;
+							}
+							else if(newdl[i]===0){
+								arr_temp=xl(i,num2);
+								if(arr_2.includes(i)===false&&arr_1.includes(i)===false){
+									arr_1.unshift(i);
+								}														
+								arr_temp.forEach((val,index)=>{
+									if(arr_2.includes(val)===false&&val>0&&val<num&&arr_1.includes(val)===false){
+										arr_1.push(val);
+									}
+								})
+								//console.log(arr_temp,arr_1);
+								//dl_span[i].classList.add("kb");
+								//dl_span[i].className="kb";
+								while(arr_1.length>0){
+									if(newdl[arr_1[0]]===0){
+										//dl_span[arr_1[0]].classList.add("kb");
+										dl_span[arr_1[0]].className="kb";
+										arr_temp=xl(arr_1[0],num2);
+										//console.log(arr_temp);
+										arr_temp.forEach((val,index)=>{
+											if(arr_2.includes(val)===false&&val>0&&val<num&&arr_1.includes(val)===false){
+												arr_1.push(val);
+											}
+										})
+									}
+									else if(newdl[arr_1[0]]>0){
+										dl_span[arr_1[0]].innerText=newdl[arr_1[0]];
+									}								
+									arr_2.push(arr_1[0]);
+									arr_1.shift();
+									sy_kg++;
+									//console.log(arr_1,arr_2,sy_kg);								
+									//console.log(arr_1,arr_2);
+									
+								}
+								/*id_all.forEach((val,index)=>{
+								})
+								for(let [key,val] of id_all){
+									if(arr1.includes(val)===false){
+										arr_1.push(val);
+									}
+								}
+								let id_all=[i-num2-1,i-num2,i-num2+1,i-1,i+1,i+num2-1,i+num2,i+num2+1].filter((v,ind)=>{
+									if(i%num2===0&&(v%num2===num2-1)&&(ind===0||ind===3||ind===5)){
+										return false;
+									}
+									else if(i%num2===(num2-1)&&(v%num2===0)&&(ind===2||ind===4||ind===7)){
+										return false;
+									}
+									else{
+										return true;
+									}
+								});
+								//console.log(i);
+								(function cz(i){
+									dl_span[i].classList.add("kb");
+									let id_all=[i-num2-1,i-num2,i-num2+1,i-1,i+1,i+num2-1,i+num2,i+num2+1].filter((v,ind)=>{
+										if(i%num2===0&&(v%num2===num2-1)&&(ind===0||ind===3||ind===5)){
+											return false;
+										}
+										else if(i%num2===(num2-1)&&(v%num2===0)&&(ind===2||ind===4||ind===7)){
+											return false;
+										}
+										else{
+											return true;
+										}
+									});
+									for(let [key,val1] of id_all.entries()){
+										if(newdl[val1]===0){
+											dl_span[val1].classList.add("kb");
+											cz(val1);
+										}
+										else if(newdl[val1]>0){
+											console.log(val1);
+											dl_span[val1].innerText=newdl[i];
+										}
+									}
+								}(i));*/
+							}
+							else{
+								dl_span[i].className="pt";
+								dl_span[i].innerText=newdl[i];
+								if(arr_2.includes(i)===false){
+									arr_2.push(i);
+									sy_kg++;
+								}
+							}
+							//console.log(sy_kg,rand_dl);
+							if(num===sy_kg+rand_dl){
+								clearInterval(times);
+								alert("恭喜你赢得游戏");
+							}
+						}
+						else if(e.button===2){
+							if(dl_span[i].classList.contains("fl")){
+								dl_span[i].classList.remove("fl");
+								sy_dl++;
+								span_num.innerText=`剩余雷数：${sy_dl}个`;
+							}
+							else{
+								dl_span[i].className="pt";
+								dl_span[i].innerText=null;
+								dl_span[i].classList.add("fl");
+								sy_dl--;
+								span_num.innerText=`剩余雷数：${sy_dl}个`;
+							}
+							/*if(newdl[i]==="dl"){
+								sj_dl--;
+							}
+							if(sj_dl===0){
+								alert("恭喜你赢得游戏");
+							}*/
+						}
+					}				
+					//console.log(e.button);					
+
+
+				};
+			}
+			//console.log(newdl);
+		}
+		/*function addLoadEvent(func,args){
+			console.log(args);
+			let oldOnload=window.onload;
+			if(typeof window.onload !== 'function'){
+				window.onload=func.bind(this,...args);
+			}
+			else{
+				window.onload=()=>{
+					oldOnload();
+					func.bind(this,...args);
+				}
+			}
+		}
+		function rightMouse(e){
+			//console.log(e.button);
+			console.log(i);
+			if(e.button===2){
+
+			}
+		}*/
+		function addLoadEvent(func){
+			let oldOnload=window.onload;
+			if(typeof window.onload !== 'function'){
+				window.onload=func;
+			}
+			else{
+				window.onload=()=>{
+					oldOnload();
+					func();
+				}
+			}
+		}
+		function bindEvent(el,event,func,args){
+			//console.log(args);
+			el[event]=func.bind(this,...args);
+		}
+		addLoadEvent(function(){
+			bindEvent(cho1,"onclick",chooseGame,[10]);
+			bindEvent(cho2,"onclick",chooseGame,[15]);
+			bindEvent(cho3,"onclick",chooseGame,[20]);
+			bindEvent(button1,"onclick",startGame,[]);
+			document.oncontextmenu=function(){return false};
+		})
+	</script>
+</body>
+</html>
