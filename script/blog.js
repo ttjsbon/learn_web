@@ -1,5 +1,10 @@
+Vue.directive("rainbow",{
+	bind(el,binding,vnode){
+		el.style.color='#'+(Math.floor(Math.random()*16)-1).toString(16)+(Math.floor(Math.random()*16)-1).toString(16)+(Math.floor(Math.random()*16)-1).toString(16);
+	}
+})
 Vue.component("sing",{
-	template:"<div id='single'><input type='text' v-model='search' placeholder='请输入你要搜索的内容'><div class='single-blog' v-for='blog in blogs_filter'><h2>{{blog.title}}</h2><artical>{{blog.blog}}</artical></div></div>",
+	template:"<div id='single'><input type='text' v-model='search' placeholder='请输入你要搜索的内容'><div class='single-blog' v-for='blog in blogs_filter'><h2 v-rainbow>{{blog.title}}</h2><artical>{{blog.blog}}</artical></div></div>",
 	data:function(){
 		return{
 			blogs:[],
