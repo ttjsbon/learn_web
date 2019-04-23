@@ -56,7 +56,6 @@
         .day{
             width: 40px;
             padding: 0 5px;
-            box-sizing: content-box;
             font-size: 1.5em;
             text-align: center;
             line-height: 40px;
@@ -85,9 +84,8 @@
             bottom: 10px;
             right: 10px;           
         }
-        .today_now{
-            border: 1px solid rgb(42,87,154);
-            box-sizing: border-box;
+        .todaynow{
+            background-color: rgb(42, 154, 89);
         }
     </style>
 </head>
@@ -199,16 +197,20 @@
         window.onload=function(){
             for(let i=week_fir;i<week_fir+days[month_choose];i++){
                 divs[i].ontouchend=function(){
-                    //console.log(i);
+                    //console.log(i,divs[i].classList.contains("todaynow"));
                     divs[i].classList.add("choose");
+                    if(divs[i].classList.contains("todaynow")){
+                        console.log(divs[i]);
+                        divs[i].classList.remove("todaynow");
+                    }
                     divs[oldcho].classList.remove("choose");
                     oldcho=i;
                     week_choose=Math.floor((i+week_fir-1)/7);
                     date_choose=i-week_fir;
-                    console.log(month_choose===month_now,date_choose===date_now,(!divs[date_now-week_fir].classList.contains("today_now")));
+                    //console.log(month_choose===month_now,(!divs[date_now-week_fir].classList.contains("todaynow")));
                     spans[0].innerHTML=`${year_choose}-${month_choose+1}-${i-week_fir+1}`;
-                    if(month_choose===month_now&&date_choose===date_now&&(!divs[date_now-week_fir].classList.contains("today_now"))){
-                        divs[date_now-week_fir].classList.add("today_now");
+                    if(month_choose===month_now&&(!divs[date_now-week_fir].classList.contains("todaynow"))){
+                        divs[date_now-week_fir].classList.add("todaynow");
                     }
                 }
             }
@@ -223,6 +225,7 @@
                         divs[i+week_fir].innerHTML=i+1;
                     }                    
                 }
+                divs[date_now-week_fir].classList.remove("todaynow");
                 divs[date_now-week_fir].classList.add("choose");
                 divs[oldcho].classList.remove("choose");
                 oldcho=date_now-week_fir;
