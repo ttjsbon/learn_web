@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>日历</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #root{
+            width: 360px;
+            height: 645px;
+            position: relative;
+        }
+        header{
+            color: white;
+            background-color: black;
+            height: 75px;
+            width: 100%;
+            position: relative;
+        }
+        #cal{
+            width: 100%;
+            height: 75px;
+            display: flex;
+            padding: 5px;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+        #nav_mid{
+            width: 100%;
+            height: 45px;
+            position: relative;
+        }
+        #mess{
+            width: 100%;
+            height: 205px;
+            position: relative;
+        }
+        footer{
+            width: 100%;
+            height: 50px;
+            position: absolute;
+            top:595px;
+        }
+        .week{
+            width: 50px;
+            font-weight: bold;
+            color: rgb(220,220,220);
+            text-align: center;
+            height: 35px;
+        }
+        .day{
+            width: 40px;
+            padding: 0 5px;
+            box-sizing: content-box;
+            font-size: 1.5em;
+            text-align: center;
+            line-height: 40px;
+            display: none;
+        }
+        #but{
+            width: 100%;
+            text-align: center;
+            height: 30px;
+            position: relative;
+        }
+        #but img{
+            display: inline-block;
+            margin-top: 5px; 
+        }
+        .choose{
+            background-color: rgb(42,87,154);
+        }
+        .date{
+            position: absolute;
+            bottom: 10px;
+            left: 40%;
+        }
+        .today{
+            position: absolute;
+            bottom: 10px;
+            right: 10px;           
+        }
+        .today_now{
+            border: 1px solid rgb(42,87,154);
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <header>
+            <span class="date"></span>
+            <span class="today">今天</span>
+        </header>
+        <div id="cal">
+            <div class="week">日</div>
+            <div class="week">一</div>
+            <div class="week">二</div>
+            <div class="week">三</div>
+            <div class="week">四</div>
+            <div class="week">五</div>
+            <div class="week">六</div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+            <div class="day"></div>
+        </div>
+        <div id="but">
+            <img src="pic/open.png" alt="展开" width="20px" height="20px">
+        </div>
+        <div id="nav_mid">
+            <img src="pic/nav2.png" alt="导航1">
+        </div>
+        <div id="mess">
+            <img src="pic/mess.png" alt="事项">
+        </div>
+        <footer>
+            <img src="pic/nav.png" alt="导航">
+        </footer>
+    </div>
+    <script>
+        let now=new Date();
+        let month_now=now.getMonth();
+        let year_now=now.getFullYear();
+        let date_now=now.getDate();
+        let week_now=now.getDay();       
+        let month_dir=new Date(year_now,month_now,1);
+        let week_fir=month_dir.getDay();
+        let week=Math.floor((date_now+week_fir-1)/7);
+        const days=[31,28,31,30,31,30,31,31,30,31,30,31];
+        let week_mon=[];
+        const divs=document.getElementsByClassName("day");
+        const cal=document.getElementById("cal");
+        const mess=document.getElementById("mess");
+        const nav_mid=document.getElementById("nav_mid");
+        const but=document.getElementById("but");
+        const spans=document.getElementsByTagName("span");
+        let startPosX,startPosY,endPosX,endPosY,moveX,moveY;
+        let year_choose=year_now;
+        let month_choose=month_now;
+        let date_choose=date_now;
+        let week_choose=week;
+        let cal_sta=true;
+        let oldcho=date_now;
+        //console.log(`$(year_now)-$(month_now)-$(date_now)`);
+        divs[date_now+week_fir-1].classList.add("choose");
+        spans[0].innerHTML=`${year_now}-${month_now+1}-${date_now}`;
+        for(let i=0;i<days[month_now];i++){
+            week_mon[i]=(i+week_fir)%7;
+            divs[i+week_fir].innerHTML=i+1;
+        }
+        for(let i=0;i<7;i++){
+            divs[7*week+i].style.display="block";
+        }
+        //console.log(week_mon);
+        window.onload=function(){
+            for(let i=week_fir;i<week_fir+days[month_choose];i++){
+                divs[i].ontouchend=function(){
+                    //console.log(i);
+                    divs[i].classList.add("choose");
+                    divs[oldcho].classList.remove("choose");
+                    oldcho=i;
+                    week_choose=Math.floor((i+week_fir-1)/7);
+                    date_choose=i-week_fir;
+                    console.log(month_choose===month_now,date_choose===date_now,(!divs[date_now-week_fir].classList.contains("today_now")));
+                    spans[0].innerHTML=`${year_choose}-${month_choose+1}-${i-week_fir+1}`;
+                    if(month_choose===month_now&&date_choose===date_now&&(!divs[date_now-week_fir].classList.contains("today_now"))){
+                        divs[date_now-week_fir].classList.add("today_now");
+                    }
+                }
+            }
+            spans[1].ontouchend=function(){
+                if(month_choose !== 3){
+                    month_choose=3;
+                    month_dir=new Date(year_choose,month_choose,1);
+                    week_fir=month_dir.getDay();
+                    //console.log(week_fir);
+                    for(let i=0;i<days[month_choose];i++){
+                        //week_mon[i]=(i+week_fir)%7;
+                        divs[i+week_fir].innerHTML=i+1;
+                    }                    
+                }
+                divs[date_now-week_fir].classList.add("choose");
+                divs[oldcho].classList.remove("choose");
+                oldcho=date_now-week_fir;
+                spans[0].innerHTML=`${year_now}-${month_now+1}-${date_now-week_fir}`;
+            }
+            cal.ontouchstart=function(e){
+                e.preventDefault();
+                startPosX=e.targetTouches[0].pageX;
+                startPosY=e.targetTouches[0].pageY;
+                //console.log(e);
+            }
+            cal.ontouchend=function(e){
+                //console.log(e);
+                e.preventDefault();
+                endPosX=e.changedTouches[0].pageX;
+                endPosY=e.changedTouches[0].pageY;
+                moveX=endPosX-startPosX;
+                moveY=endPosY-startPosY;
+                //console.log(startPosX,startPosY,endPosX,endPosY,moveX,moveY);
+                if(Math.abs(moveX)>=Math.abs(moveY)&&Math.abs(moveX)>=15){
+                    //console.log(moveX);
+                    if(moveX<0){
+                        if(cal_sta===true&&week_choose<4){
+                            for(let i=0;i<7;i++){
+                                divs[7*week_choose+i].style.display="none";
+                            }
+                            week_choose++;
+                            for(let i=0;i<7;i++){
+                                divs[7*week_choose+i].style.display="block";
+                            }
+                        }
+                        else if(cal_sta===false&&month_choose<12){
+                            for(let i=0;i<days[month_choose];i++){
+                                //week_mon[i]=(i+week_fir)%7;
+                                divs[i+week_fir].innerHTML='';
+                            }
+                            month_choose++;
+                            month_dir=new Date(year_choose,month_choose,1);
+                            week_fir=month_dir.getDay();
+                            //console.log(week_fir);
+                            for(let i=0;i<days[month_choose];i++){
+                                //week_mon[i]=(i+week_fir)%7;
+                                divs[i+week_fir].innerHTML=i+1;
+                            }
+                            spans[0].innerHTML='';
+                        }
+                        //alert("向左滑");
+                    }
+                    else{
+                        if(cal_sta===true&&week_choose>0){
+                            for(let i=0;i<7;i++){
+                                divs[7*week_choose+i].style.display="none";
+                            }
+                            week_choose--;
+                            for(let i=0;i<7;i++){
+                                divs[7*week_choose+i].style.display="block";
+                            }
+                        }
+                        else if(cal_sta===false&&month_choose>0){
+                            for(let i=0;i<days[month_choose];i++){
+                                //week_mon[i]=(i+week_fir)%7;
+                                divs[i+week_fir].innerHTML='';
+                            }
+                            month_choose--;
+                            month_dir=new Date(year_choose,month_choose,1);
+                            week_fir=month_dir.getDay();
+                            for(let i=0;i<days[month_choose];i++){
+                                //week_mon[i]=(i+week_fir)%7;
+                                divs[i+week_fir].innerHTML=i+1;
+                            }
+                            spans[0].innerHTML='';
+                        }
+                        //alert("向右滑");
+                    }
+                }
+                else if(Math.abs(moveX)<Math.abs(moveY)&&Math.abs(moveY)>=15){
+                    if(moveY>0){
+                        //alert("向下滑");
+                        if(cal_sta===true){
+                            cal.style.overflow="visible";
+                            mess.style.overflow="hidden";
+                            mess.style.top=160+"px";
+                            nav_mid.style.top=160+"px";
+                            but.style.top=160+"px";
+                            for(let i=0;i<35;i++){
+                                divs[i].style.display="block";
+                            }
+                            cal_sta=false;
+                        }
+                    }
+                    else{
+                        //alert("向上滑");
+                        if(cal_sta===false){
+                            cal.style.overflow="hidden";
+                            mess.style.overflow="visible";
+                            mess.style.top=0;
+                            nav_mid.style.top=0;
+                            but.style.top=0;
+                            for(let i=0;i<35;i++){
+                                divs[i].style.display="none";
+                            }
+                            for(let i=0;i<7;i++){
+                                divs[7*week_choose+i].style.display="block";
+                            }
+                            cal_sta=true;
+                        }
+                    }                    
+                }
+            }
+        }
+    </script>
+</body>
+</html>
